@@ -178,7 +178,22 @@
   let cloudOffset = 0;
   let playerName = 'Spieler';
   let leaderboard = [];
-  const hasOnlineStorage = (typeof window.storage !== 'undefined');
+
+  // ---------- Online-Bestenliste (Firebase) ----------
+  // Trag deine eigenen Werte in firebase-config.js ein (siehe Anleitung).
+  // Solange dort nur Platzhalter stehen, läuft die Bestenliste automatisch
+  // lokal weiter -- das Spiel funktioniert so oder so ganz normal.
+  let db = null;
+  let onlineReady = false;
+  try {
+    if (typeof firebaseConfig !== 'undefined' &&
+        firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('DEIN_') !== 0 &&
+        typeof firebase !== 'undefined'){
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      onlineReady = true;
+    }
+  } catch(e){ onlineReady = false; }
 
   const scoreVal = document.getElementById('scoreVal');
   const highScoreVal = document.getElementById('highScoreVal');
@@ -207,24 +222,29 @@
   }
 
   async function loadLeaderboard(){
-    if (hasOnlineStorage){
+    if (onlineReady){
       try {
-        const res = await window.storage.get('leaderboard', true);
-        if (res && res.value) leaderboard = JSON.parse(res.value);
-      } catch(e){ /* noch kein Eintrag vorhanden */ }
+        const snap = await db.collection('leaderboard').orderBy('score','desc').limit(8).get();
+        leaderboard = snap.docs.map(function(d){ return d.data(); });
+        renderLeaderboard();
+        return;
+      } catch(e){ /* z.B. noch keine Verbindung/Regeln nicht bereit */ }
     }
     renderLeaderboard();
   }
 
   async function submitScore(name, sc){
+    if (onlineReady){
+      try {
+        await db.collection('leaderboard').add({ name:name, score:sc, ts:Date.now() });
+        await loadLeaderboard();
+        return;
+      } catch(e){ /* fällt unten auf lokale Liste zurück */ }
+    }
     leaderboard.push({ name:name, score:sc });
     leaderboard.sort(function(a,b){ return b.score - a.score; });
     leaderboard = leaderboard.slice(0, 8);
     renderLeaderboard();
-    if (hasOnlineStorage){
-      try { await window.storage.set('leaderboard', JSON.stringify(leaderboard), true); }
-      catch(e){ /* bleibt lokal im Speicher */ }
-    }
   }
 
   function resetGame(){
