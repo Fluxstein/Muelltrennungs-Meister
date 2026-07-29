@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mülltrennungs-Meister</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game-wrap" id="gameWrap">
+  <canvas id="gameCanvas" width="900" height="600"></canvas>
+
+  <div class="hud">
+    <div class="badge">
+      <span class="label">Punkte</span>
+      <div class="value" id="scoreVal">0</div>
+    </div>
+    <div class="enviro-wrap">
+      <span class="label">Umwelt</span>
+      <div class="enviro-bar"><div class="enviro-fill" id="enviroFill" style="width:100%"></div></div>
+      <div class="enviro-icons"><span>🌱</span><span id="enviroIcon">🙂</span></div>
+    </div>
+    <div class="badge">
+      <span class="label">Bestleistung</span>
+      <div class="value" id="highScoreVal">0</div>
+    </div>
+  </div>
+
+  <div class="panel" id="titlePanel">
+    <div class="panel-card">
+      <h1>Mülltrennungs-Meister</h1>
+      <p>Sammle den herabfallenden Müll ein und bring ihn in die richtige Tonne, bevor die Umwelt zu sehr leidet!</p>
+      <div class="legend">
+        <div class="chip"><div class="swatch" style="background:var(--bin-papier)"></div>Papier</div>
+        <div class="chip"><div class="swatch" style="background:var(--bin-bio)"></div>Bio</div>
+        <div class="chip"><div class="swatch" style="background:var(--bin-verpackung)"></div>Verpackung</div>
+        <div class="chip"><div class="swatch" style="background:var(--bin-restmuell)"></div>Restmüll</div>
+      </div>
+      <p class="hint">◄ ► / A・D: Bewegen &nbsp;·&nbsp; Leertaste oder ↓: In der Tonne ablegen</p>
+      <input type="text" id="nameInput" class="name-input" placeholder="Dein Name" maxlength="14">
+      <button class="btn" id="startBtn">Spiel starten</button>
+      <div class="leaderboard">
+        <div class="lb-title">🏆 Bestenliste</div>
+        <ol class="lb-list"></ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="gameOverPanel">
+    <div class="panel-card">
+      <h1>Spiel vorbei!</h1>
+      <div class="score-final">
+        Punkte: <b id="finalScore">0</b><br>
+        Bestleistung: <b id="finalHigh">0</b>
+      </div>
+      <div class="leaderboard">
+        <div class="lb-title">🏆 Bestenliste</div>
+        <ol class="lb-list"></ol>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="restartBtn">Nochmal spielen</button>
+        <button class="btn btn-secondary" id="toTitleBtn">Zum Start</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="touch-controls">
+    <button class="touch-btn" id="touchLeft" aria-label="Links">◄</button>
+    <button class="touch-btn touch-btn-drop" id="touchDrop" aria-label="Ablegen">⬇</button>
+    <button class="touch-btn" id="touchRight" aria-label="Rechts">►</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
